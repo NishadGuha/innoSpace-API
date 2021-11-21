@@ -3,6 +3,20 @@ neighborhood_list:
   controller: App\Controller\NeighborhoodController:indexAction
   methods: [GET]
 
+neighborhood_find:
+  path: /api/neighborhood/{id}
+  controller: App\Controller\NeighborhoodController:findByIdAction
+  methods: [GET]
+  requirements:
+    id: '\d+'
+
+neighborhood_delete:
+  path: /api/neighborhood/{id}/delete
+  controller: App\Controller\NeighborhoodController:removeByIdAction
+  methods: [DELETE]
+  requirements:
+    id: '\d+'
+
 neighborhood_create:
   path: /api/neighborhood/create
   controller: App\Controller\NeighborhoodController:createAction
@@ -12,3 +26,10 @@ neighborhood_delete_all:
   path: /api/neighborhood/delete-all
   controller: App\Controller\NeighborhoodController:removeAllAction
   methods: [DELETE]
+
+neighborhood_update:
+  path: /api/neighborhood/{id}/update
+  controller: App\Controller\NeighborhoodController:updateAction
+  methods: [PATCH]
+  requirements:
+    id: '\d+'
