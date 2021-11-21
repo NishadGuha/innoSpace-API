@@ -3,48 +3,106 @@
 namespace App\Repository;
 
 use App\Entity\Usage;
-use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
-use Doctrine\Persistence\ManagerRegistry;
+use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\NonUniqueResultException;
+use Doctrine\ORM\NoResultException;
+use Doctrine\ORM\QueryBuilder;
 
-/**
- * @method Usage|null find($id, $lockMode = null, $lockVersion = null)
- * @method Usage|null findOneBy(array $criteria, array $orderBy = null)
- * @method Usage[]    findAll()
- * @method Usage[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
- */
-class UsageRepository extends ServiceEntityRepository
+class UsageRepository
 {
-    public function __construct(ManagerRegistry $registry)
+    /**
+     * @var EntityManagerInterface
+     */
+    private EntityManagerInterface $objectManager;
+
+    /**
+     * @param EntityManagerInterface $objectManager
+     */
+    public function __construct(EntityManagerInterface $objectManager)
     {
-        parent::__construct($registry, Usage::class);
+        $this->objectManager = $objectManager;
     }
 
-    // /**
-    //  * @return Usage[] Returns an array of Usage objects
-    //  */
-    /*
-    public function findByExampleField($value)
+    /**
+     * Find all usages.
+     *
+     * @param string $orderBy
+     *
+     * @return Usage[]
+     */
+    public function all(string $orderBy = 'id'): array
     {
-        return $this->createQueryBuilder('u')
-            ->andWhere('u.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('u.id', 'ASC')
-            ->setMaxResults(10)
+        return $this
+            ->qb()
+            ->orderBy(sprintf('usage.%s', $orderBy))
             ->getQuery()
-            ->getResult()
-        ;
+            ->getResult();
     }
-    */
 
-    /*
-    public function findOneBySomeField($value): ?Usage
+    /**
+     * Find usage by id.
+     *
+     * @param  int  $id
+     *
+     * @return Usage
+     *
+     * @throws NonUniqueResultException
+     */
+    public function findById(int $id): Usage
     {
-        return $this->createQueryBuilder('u')
-            ->andWhere('u.exampleField = :val')
-            ->setParameter('val', $value)
+        return $this
+            ->qb()
+            ->where($this->qb()->expr()->eq('usage.id', ':id'))
+            ->setParameter('id', $id)
             ->getQuery()
-            ->getOneOrNullResult()
-        ;
+            ->getOneOrNullResult();
     }
-    */
+
+    /**
+     * Save usage to database.
+     *
+     * @param Usage $usage
+     */
+    public function save(Usage $usage): void
+    {
+        $this->objectManager->persist($usage);
+        $this->objectManager->flush();
+    }
+
+    /**
+     * Remove usage from database.
+     *
+     * @param Usage $usage
+     */
+    public function remove(Usage $usage): void
+    {
+        $this->objectManager->remove($usage);
+        $this->objectManager->flush();
+    }
+
+    /**
+     * @return int
+     * @throws NonUniqueResultException
+     * @throws NoResultException
+     */
+    public function count(): int
+    {
+        return (int) $this->qb()
+            ->select('count(usage.id)')
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
+
+
+    /**
+     * @return QueryBuilder
+     */
+    private function qb(): QueryBuilder
+    {
+        return $this->objectManager
+            ->createQueryBuilder()
+            ->select('usage')
+            ->from(Usage::class, 'usage');
+    }
+
 }

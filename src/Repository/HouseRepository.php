@@ -3,48 +3,106 @@
 namespace App\Repository;
 
 use App\Entity\House;
-use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
-use Doctrine\Persistence\ManagerRegistry;
+use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\NonUniqueResultException;
+use Doctrine\ORM\NoResultException;
+use Doctrine\ORM\QueryBuilder;
 
-/**
- * @method House|null find($id, $lockMode = null, $lockVersion = null)
- * @method House|null findOneBy(array $criteria, array $orderBy = null)
- * @method House[]    findAll()
- * @method House[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
- */
-class HouseRepository extends ServiceEntityRepository
+class HouseRepository
 {
-    public function __construct(ManagerRegistry $registry)
+    /**
+     * @var EntityManagerInterface
+     */
+    private EntityManagerInterface $objectManager;
+
+    /**
+     * @param EntityManagerInterface $objectManager
+     */
+    public function __construct(EntityManagerInterface $objectManager)
     {
-        parent::__construct($registry, House::class);
+        $this->objectManager = $objectManager;
     }
 
-    // /**
-    //  * @return House[] Returns an array of House objects
-    //  */
-    /*
-    public function findByExampleField($value)
+    /**
+     * Find all houses.
+     *
+     * @param string $orderBy
+     *
+     * @return House[]
+     */
+    public function all(string $orderBy = 'id'): array
     {
-        return $this->createQueryBuilder('h')
-            ->andWhere('h.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('h.id', 'ASC')
-            ->setMaxResults(10)
+        return $this
+            ->qb()
+            ->orderBy(sprintf('house.%s', $orderBy))
             ->getQuery()
-            ->getResult()
-        ;
+            ->getResult();
     }
-    */
 
-    /*
-    public function findOneBySomeField($value): ?House
+    /**
+     * Find house by id.
+     *
+     * @param  int  $id
+     *
+     * @return House
+     *
+     * @throws NonUniqueResultException
+     */
+    public function findById(int $id): House
     {
-        return $this->createQueryBuilder('h')
-            ->andWhere('h.exampleField = :val')
-            ->setParameter('val', $value)
+        return $this
+            ->qb()
+            ->where($this->qb()->expr()->eq('house.id', ':id'))
+            ->setParameter('id', $id)
             ->getQuery()
-            ->getOneOrNullResult()
-        ;
+            ->getOneOrNullResult();
     }
-    */
+
+    /**
+     * Save house to database.
+     *
+     * @param House $house
+     */
+    public function save(House $house): void
+    {
+        $this->objectManager->persist($house);
+        $this->objectManager->flush();
+    }
+
+    /**
+     * Remove house from database.
+     *
+     * @param House $house
+     */
+    public function remove(House $house): void
+    {
+        $this->objectManager->remove($house);
+        $this->objectManager->flush();
+    }
+
+    /**
+     * @return int
+     * @throws NonUniqueResultException
+     * @throws NoResultException
+     */
+    public function count(): int
+    {
+        return (int) $this->qb()
+            ->select('count(house.id)')
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
+
+
+    /**
+     * @return QueryBuilder
+     */
+    private function qb(): QueryBuilder
+    {
+        return $this->objectManager
+            ->createQueryBuilder()
+            ->select('house')
+            ->from(House::class, 'house');
+    }
+
 }
