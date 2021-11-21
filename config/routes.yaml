@@ -1,3 +1,14 @@
-#index:
-#    path: /
-#    controller: App\Controller\DefaultController::index
+neighborhood_list:
+  path: /api/neighborhood/all
+  controller: App\Controller\NeighborhoodController:indexAction
+  methods: [GET]
+
+neighborhood_create:
+  path: /api/neighborhood/create
+  controller: App\Controller\NeighborhoodController:createAction
+  methods: [POST]
+
+neighborhood_delete_all:
+  path: /api/neighborhood/delete-all
+  controller: App\Controller\NeighborhoodController:removeAllAction
+  methods: [DELETE]

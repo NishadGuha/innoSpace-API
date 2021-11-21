@@ -11,11 +11,9 @@ class IndexController extends AbstractController
     /**
      * @Route("/", name="index")
      */
-    public function index()
+    public function index(): Response
     {
 
-        $response = new Response("Hello world!", 200);
-
-        return $response;
+        return new Response("Welcome to Brainport Smart Energy Grid REST API", 200);
     }
 }
