@@ -4,7 +4,6 @@ namespace App\Controller;
 
 use App\Entity\Neighborhood;
 use App\Form\NeighborhoodType;
-use App\Form\NeighborhoodUpdateType;
 use App\Repository\NeighborhoodRepository;
 use Exception;
 use Symfony\Component\HttpFoundation\JsonResponse;
