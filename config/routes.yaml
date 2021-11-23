@@ -33,3 +33,40 @@ neighborhood_update:
   methods: [PATCH]
   requirements:
     id: '\d+'
+
+house_list:
+  path: /api/house/all
+  controller: App\Controller\HouseController:indexAction
+  methods: [GET]
+
+house_find:
+  path: /api/house/{id}
+  controller: App\Controller\HouseController:findByIdAction
+  methods: [GET]
+  requirements:
+    id: '\d+'
+
+house_delete:
+  path: /api/house/{id}/delete
+  controller: App\Controller\HouseController:removeByIdAction
+  methods: [DELETE]
+  requirements:
+    id: '\d+'
+
+house_create:
+  path: /api/house/create
+  controller: App\Controller\HouseController:createAction
+  methods: [POST]
+
+house_delete_all:
+  path: /api/house/delete-all
+  controller: App\Controller\HouseController:removeAllAction
+  methods: [DELETE]
+
+house_update:
+  path: /api/house/{id}/update
+  controller: App\Controller\HouseController:updateAction
+  methods: [PATCH]
+  requirements:
+    id: '\d+'
+

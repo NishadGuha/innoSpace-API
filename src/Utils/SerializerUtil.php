@@ -17,4 +17,11 @@ class SerializerUtil
         return new Serializer($normalizers, $encoders);
     }
 
+    public static function circularSerializer(): Serializer
+    {
+        $encoders = [new JsonEncoder()];
+        $normalizers = [new ObjectNormalizer()];
+        return  new Serializer($normalizers, $encoders);
+    }
+
 }

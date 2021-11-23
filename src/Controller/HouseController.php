@@ -2,27 +2,32 @@
 
 namespace App\Controller;
 
-use App\Entity\Neighborhood;
-use App\Form\NeighborhoodType;
+use App\Entity\House;
+use App\Form\HouseType;
+use App\Repository\HouseRepository;
 use App\Repository\NeighborhoodRepository;
+use App\Utils\SerializerUtil;
 use Doctrine\ORM\NonUniqueResultException;
 use Exception;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use App\Utils\SerializerUtil;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
-class NeighborhoodController extends AbstractApiController
+
+class HouseController extends AbstractApiController
 {
+    private HouseRepository $houseRepository;
 
     private NeighborhoodRepository $neighborhoodRepository;
 
     /**
+     * @param HouseRepository $houseRepository
      * @param NeighborhoodRepository $neighborhoodRepository
      */
-    public function __construct(NeighborhoodRepository $neighborhoodRepository)
+    public function __construct(HouseRepository $houseRepository, NeighborhoodRepository $neighborhoodRepository)
     {
+        $this->houseRepository = $houseRepository;
         $this->neighborhoodRepository = $neighborhoodRepository;
     }
 
@@ -33,43 +38,38 @@ class NeighborhoodController extends AbstractApiController
     public function indexAction(Request $request): Response
     {
 
-        $neighborhoods = $this->neighborhoodRepository->all();
+        $houses = $this->houseRepository->all();
 
         $serializer = SerializerUtil::circularSerializer();
 
-        $neighborhoodSerialized = $serializer->serialize($neighborhoods, 'json', [
+        $housesSerialized = $serializer->serialize($houses, 'json', [
             'circular_reference_handler' => function ($object) {
                 return $object->getId();
             }
         ]);
 
-        return new Response($neighborhoodSerialized, 200, []);
+        return new Response($housesSerialized, 200, []);
     }
 
     /**
      * @param Request $request
      * @param int $id
      * @return Response
+     * @throws NonUniqueResultException
      */
     public function findByIdAction(Request $request, int $id): Response
     {
-        try {
-            $neighborhood = $this->neighborhoodRepository->findById($id);
-        } catch (Exception $e) {
-            return new Response(json_encode([
-                "message" => $e->getMessage()
-            ]), $e->getCode(), []);
-        }
+        $house = $this->houseRepository->findById($id);
 
         $serializer = SerializerUtil::circularSerializer();
 
-        $neighborhoodSerialized = $serializer->serialize($neighborhood, 'json', [
+        $houseSerialized = $serializer->serialize($house, 'json', [
             'circular_reference_handler' => function ($object) {
                 return $object->getId();
             }
         ]);
 
-        return new Response($neighborhoodSerialized, 200, []);
+        return new Response($houseSerialized, 200, []);
     }
 
     /**
@@ -80,15 +80,15 @@ class NeighborhoodController extends AbstractApiController
      */
     public function removeByIdAction(Request $request, int $id): Response
     {
-        $neighborhood = $this->neighborhoodRepository->findById($id);
-        $neighborhoodId = $neighborhood->getId();
+        $house = $this->houseRepository->findById($id);
+        $houseId = $house->getId();
 
-        $this->neighborhoodRepository->remove($neighborhood);
+        $this->houseRepository->remove($house);
 
         $response = [
             "status" => 200,
             "message" => "success",
-            "description" => "Neighborhood ". $neighborhoodId . " at " . $neighborhood->getStreet() . " removed."
+            "description" => "House ". $houseId . " at " . $house->getHouseNumber() . " removed."
         ];
 
         return new Response(json_encode($response), 200, []);
@@ -100,7 +100,7 @@ class NeighborhoodController extends AbstractApiController
      */
     public function createAction(Request $request): Response
     {
-        $form = $this->buildForm(NeighborhoodType::class);
+        $form = $this->buildForm(HouseType::class);
 
         $form->handleRequest($request);
 
@@ -109,20 +109,25 @@ class NeighborhoodController extends AbstractApiController
             exit;
         }
 
-        /** @var Neighborhood $neighborhood */
-        $neighborhood = $form->getData();
-
-        $this->neighborhoodRepository->save($neighborhood);
+        try {
+            $house = $form->getData();
+            $this->houseRepository->save($house);
+        } catch (Exception $e) {
+            return new Response(json_encode([
+                "message" => $e->getMessage()
+            ]), $e->getCode(), []);
+        }
 
         $serializer = SerializerUtil::circularSerializer();
 
-        $neighborhoodSerialized = $serializer->serialize($neighborhood, 'json', [
+        // Serialize your object in Json
+        $houseSerialized = $serializer->serialize($house, 'json', [
             'circular_reference_handler' => function ($object) {
                 return $object->getId();
             }
         ]);
 
-        return new Response($neighborhoodSerialized, 200, []);
+        return new Response($houseSerialized, 200, []);
     }
 
     /**
@@ -132,10 +137,10 @@ class NeighborhoodController extends AbstractApiController
     public function removeAllAction(Request $request): JsonResponse
     {
         try {
-            $neighborhoods = $this->neighborhoodRepository->all();
+            $houses = $this->houseRepository->all();
 
-            foreach ($neighborhoods as $neighborhood) {
-                $this->neighborhoodRepository->remove($neighborhood);
+            foreach ($houses as $house) {
+                $this->houseRepository->remove($house);
             }
         } catch (Exception $e) {
             return $this->json([
@@ -147,7 +152,7 @@ class NeighborhoodController extends AbstractApiController
         return $this->json([
             "status" => 200,
             "message" => "success",
-            "description" => "Deleted all neighborhoods"
+            "description" => "Deleted all houses"
         ]);
 
     }
@@ -160,13 +165,13 @@ class NeighborhoodController extends AbstractApiController
      */
     public function updateAction(Request $request, int $id)
     {
-        $neighborhood = $this->neighborhoodRepository->findById($id);
+        $house = $this->houseRepository->findById($id);
 
-        if (!$neighborhood) {
-            throw new NotFoundHttpException('Neighborhood not found');
+        if (!$house) {
+            throw new NotFoundHttpException('house not found');
         }
 
-        $form = $this->buildForm(NeighborhoodType::class, $neighborhood, [
+        $form = $this->buildForm(HouseType::class, $house, [
             'method' => $request->getMethod()
         ]);
 
@@ -177,19 +182,23 @@ class NeighborhoodController extends AbstractApiController
             exit;
         }
 
-        /** @var Neighborhood $data */
-        $data = $form->getData();
-
-        $this->neighborhoodRepository->save($data);
+        try {
+            $house = $form->getData();
+            $this->houseRepository->save($house);
+        } catch (Exception $e) {
+            return new Response(json_encode([
+                "message" => $e->getMessage()
+            ]), $e->getCode(), []);
+        }
 
         $serializer = SerializerUtil::circularSerializer();
 
-        $neighborhoodSerialized = $serializer->serialize($neighborhood, 'json', [
+        $houseSerialized = $serializer->serialize($house, 'json', [
             'circular_reference_handler' => function ($object) {
                 return $object->getId();
             }
         ]);
 
-        return new Response($neighborhoodSerialized, 200, []);
+        return new Response($houseSerialized, 200, []);
     }
 }
