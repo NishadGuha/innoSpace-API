@@ -112,7 +112,19 @@ class UsageController extends AbstractApiController
         /** @var Usage $usage */
         $usage = $form->getData();
 
-        $this->usageRepository->save($usage);
+        // Check if device belongs to house
+        $device = $usage->getDevice();
+        $house = $usage->getHouse();
+        $devices = $house->getDevices();
+
+        if ($devices->contains($device)) {
+            $this->usageRepository->save($usage);
+        } else {
+            return new Response(json_encode([
+                "status" => "Error",
+                "message" => "Device " . $device->getId() . " does not belong to House " . $house->getId()
+            ]), 500, []);
+        }
 
         $serializer = SerializerUtil::circularSerializer();
 
