@@ -1,3 +1,4 @@
+# Neighborhood
 neighborhood_list:
   path: /api/neighborhood/all
   controller: App\Controller\NeighborhoodController:indexAction
@@ -34,6 +35,14 @@ neighborhood_update:
   requirements:
     id: '\d+'
 
+neighborhood_get_houses:
+  path: /api/neighborhood/{id}/houses
+  controller: App\Controller\NeighborhoodController:getAllHouses
+  methods: [GET]
+  requirements:
+    id: '\d+'
+
+# House
 house_list:
   path: /api/house/all
   controller: App\Controller\HouseController:indexAction
@@ -66,6 +75,101 @@ house_delete_all:
 house_update:
   path: /api/house/{id}/update
   controller: App\Controller\HouseController:updateAction
+  methods: [PATCH]
+  requirements:
+    id: '\d+'
+
+house_get_devices:
+  path: /api/house/{id}/devices
+  controller: App\Controller\HouseController:getAllDevices
+  methods: [GET]
+  requirements:
+    id: '\d+'
+
+house_get_usages:
+  path: /api/house/{id}/usages
+  controller: App\Controller\HouseController:getAllUsages
+  methods: [GET]
+  requirements:
+    id: '\d+'
+
+# Device
+device_list:
+  path: /api/device/all
+  controller: App\Controller\DeviceController:indexAction
+  methods: [GET]
+
+device_find:
+  path: /api/device/{id}
+  controller: App\Controller\DeviceController:findByIdAction
+  methods: [GET]
+  requirements:
+    id: '\d+'
+
+device_delete:
+  path: /api/device/{id}/delete
+  controller: App\Controller\DeviceController:removeByIdAction
+  methods: [DELETE]
+  requirements:
+    id: '\d+'
+
+device_create:
+  path: /api/device/create
+  controller: App\Controller\DeviceController:createAction
+  methods: [POST]
+
+device_delete_all:
+  path: /api/device/delete-all
+  controller: App\Controller\DeviceController:removeAllAction
+  methods: [DELETE]
+
+device_update:
+  path: /api/device/{id}/update
+  controller: App\Controller\DeviceController:updateAction
+  methods: [PATCH]
+  requirements:
+    id: '\d+'
+
+device_get_usages:
+  path: /api/device/{id}/usages
+  controller: App\Controller\DeviceController:getAllUsages
+  methods: [GET]
+  requirements:
+    id: '\d+'
+
+# Usage
+usage_list:
+  path: /api/usage/all
+  controller: App\Controller\UsageController:indexAction
+  methods: [GET]
+
+usage_find:
+  path: /api/usage/{id}
+  controller: App\Controller\UsageController:findByIdAction
+  methods: [GET]
+  requirements:
+    id: '\d+'
+
+usage_delete:
+  path: /api/usage/{id}/delete
+  controller: App\Controller\UsageController:removeByIdAction
+  methods: [DELETE]
+  requirements:
+    id: '\d+'
+
+usage_create:
+  path: /api/usage/create
+  controller: App\Controller\UsageController:createAction
+  methods: [POST]
+
+usage_delete_all:
+  path: /api/usage/delete-all
+  controller: App\Controller\UsageController:removeAllAction
+  methods: [DELETE]
+
+usage_update:
+  path: /api/usage/{id}/update
+  controller: App\Controller\UsageController:updateAction
   methods: [PATCH]
   requirements:
     id: '\d+'

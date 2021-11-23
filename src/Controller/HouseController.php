@@ -2,7 +2,6 @@
 
 namespace App\Controller;
 
-use App\Entity\House;
 use App\Form\HouseType;
 use App\Repository\HouseRepository;
 use App\Repository\NeighborhoodRepository;
@@ -200,5 +199,39 @@ class HouseController extends AbstractApiController
         ]);
 
         return new Response($houseSerialized, 200, []);
+    }
+
+    public function getAllDevices(Request $request, int $id): Response
+    {
+        $house = $this->houseRepository->findById($id);
+
+        $devices = $house->getDevices();
+
+        $serializer = SerializerUtil::circularSerializer();
+
+        $devicesSerialized = $serializer->serialize($devices, 'json', [
+            'circular_reference_handler' => function ($object) {
+                return $object->getId();
+            }
+        ]);
+
+        return new Response($devicesSerialized, 200, []);
+    }
+
+    public function getAllUsages(Request $request, int $id): Response
+    {
+        $house = $this->houseRepository->findById($id);
+
+        $usages = $house->getUsages();
+
+        $serializer = SerializerUtil::circularSerializer();
+
+        $usagesSerialized = $serializer->serialize($usages, 'json', [
+            'circular_reference_handler' => function ($object) {
+                return $object->getId();
+            }
+        ]);
+
+        return new Response($usagesSerialized, 200, []);
     }
 }
