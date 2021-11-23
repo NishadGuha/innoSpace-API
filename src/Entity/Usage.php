@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use App\Repository\UsageRepository;
+use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -37,6 +38,14 @@ class Usage
      * @ORM\Column(type="string", length=255)
      */
     private $consumption;
+
+    /**
+     * Initialize to current datetime
+     */
+    public function __construct()
+    {
+        $this->time_created = new DateTime();
+    }
 
     public function getId(): ?int
     {

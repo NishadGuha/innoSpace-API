@@ -31,12 +31,6 @@ class UsageType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('time_created', HiddenType::class, [
-                'data' => date('m/d/Y h:i:s a', time()),
-                "constraints" => [
-                    new NotNull()
-                ]
-            ])
             ->add('consumption', TextType::class, [
                 "constraints" => [
                     new NotNull()

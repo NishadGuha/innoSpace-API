@@ -32,7 +32,6 @@ class NeighborhoodController extends AbstractApiController
      */
     public function indexAction(Request $request): Response
     {
-
         $neighborhoods = $this->neighborhoodRepository->all();
 
         $serializer = SerializerUtil::circularSerializer();
