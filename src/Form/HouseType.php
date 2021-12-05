@@ -4,6 +4,7 @@ namespace App\Form;
 
 use App\Entity\House;
 use App\Entity\Neighborhood;
+use App\Form\DataTransformer\IdToHouseTypeTransformer;
 use App\Form\DataTransformer\IdToNeighborhoodTransformer;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
@@ -15,15 +16,20 @@ use Symfony\Component\Validator\Constraints\NotNull;
 
 class HouseType extends AbstractType
 {
-    private IdToNeighborhoodTransformer $transformer;
+    private IdToNeighborhoodTransformer $neighborhoodTransformer;
+
+    private IdToHouseTypeTransformer $houseTypeTransformer;
 
     /**
-     * @param IdToNeighborhoodTransformer $transformer
+     * @param IdToNeighborhoodTransformer $neighborhoodTransformer
+     * @param IdToHouseTypeTransformer $houseTypeTransformer
      */
-    public function __construct(IdToNeighborhoodTransformer $transformer)
+    public function __construct(IdToNeighborhoodTransformer $neighborhoodTransformer, IdToHouseTypeTransformer $houseTypeTransformer)
     {
-        $this->transformer = $transformer;
+        $this->neighborhoodTransformer = $neighborhoodTransformer;
+        $this->houseTypeTransformer = $houseTypeTransformer;
     }
+
 
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
@@ -48,9 +54,21 @@ class HouseType extends AbstractType
                     new NotNull()
                 ]
             ])
+            ->add('occupants', TextType::class, [
+                "constraints" => [
+                    new NotNull()
+                ]
+            ])
+            ->add('houseType', TextType::class, [
+                "constraints" => [
+                    new NotNull()
+                ]
+            ])
         ;
 
-        $builder->get('neighborhood')->addModelTransformer($this->transformer);
+        $builder->get('neighborhood')->addModelTransformer($this->neighborhoodTransformer);
+
+        $builder->get('houseType')->addModelTransformer($this->houseTypeTransformer);
     }
 
     public function configureOptions(OptionsResolver $resolver)

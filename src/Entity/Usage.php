@@ -40,6 +40,11 @@ class Usage
     private $consumption;
 
     /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $duration;
+
+    /**
      * Initialize to current datetime
      */
     public function __construct()
@@ -96,6 +101,18 @@ class Usage
     public function setConsumption(string $consumption): self
     {
         $this->consumption = $consumption;
+
+        return $this;
+    }
+
+    public function getDuration(): ?string
+    {
+        return $this->duration;
+    }
+
+    public function setDuration(?string $duration): self
+    {
+        $this->duration = $duration;
 
         return $this;
     }

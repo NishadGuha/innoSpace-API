@@ -174,3 +174,62 @@ usage_update:
   requirements:
     id: '\d+'
 
+# HouseType
+house_type_list:
+  path: /api/house-type/all
+  controller: App\Controller\HouseTypeController:indexAction
+  methods: [GET]
+
+house_type_find:
+  path: /api/house-type/{id}
+  controller: App\Controller\HouseTypeController:findByIdAction
+  methods: [GET]
+  requirements:
+    id: '\d+'
+
+house_type_delete:
+  path: /api/house-type/{id}/delete
+  controller: App\Controller\HouseTypeController:removeByIdAction
+  methods: [DELETE]
+  requirements:
+    id: '\d+'
+
+house_type_create:
+  path: /api/house-type/create
+  controller: App\Controller\HouseTypeController:createAction
+  methods: [POST]
+
+house_type_delete_all:
+  path: /api/house-type/delete-all
+  controller: App\Controller\HouseTypeController:removeAllAction
+  methods: [DELETE]
+
+# DeviceType
+device_type_list:
+  path: /api/device-type/all
+  controller: App\Controller\DeviceTypeController:indexAction
+  methods: [GET]
+
+device_type_find:
+  path: /api/device-type/{id}
+  controller: App\Controller\DeviceTypeController:findByIdAction
+  methods: [GET]
+  requirements:
+    id: '\d+'
+
+device_type_delete:
+  path: /api/device-type/{id}/delete
+  controller: App\Controller\DeviceTypeController:removeByIdAction
+  methods: [DELETE]
+  requirements:
+    id: '\d+'
+
+device_type_create:
+  path: /api/device-type/create
+  controller: App\Controller\DeviceTypeController:createAction
+  methods: [POST]
+
+device_type_delete_all:
+  path: /api/device-type/delete-all
+  controller: App\Controller\DeviceTypeController:removeAllAction
+  methods: [DELETE]

@@ -49,6 +49,16 @@ class House
      */
     private $usages;
 
+    /**
+     * @ORM\ManyToOne(targetEntity=HouseType::class, inversedBy="houses")
+     */
+    private $houseType;
+
+    /**
+     * @ORM\Column(type="integer", nullable=true)
+     */
+    private $occupants;
+
     public function __construct()
     {
         $this->devices = new ArrayCollection();
@@ -166,5 +176,33 @@ class House
         }
 
         return $this;
+    }
+
+    public function getOccupants(): ?int
+    {
+        return $this->occupants;
+    }
+
+    public function setOccupants(?int $occupants): self
+    {
+        $this->occupants = $occupants;
+
+        return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getHouseType()
+    {
+        return $this->houseType;
+    }
+
+    /**
+     * @param mixed $houseType
+     */
+    public function setHouseType($houseType): void
+    {
+        $this->houseType = $houseType;
     }
 }

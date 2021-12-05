@@ -36,6 +36,11 @@ class UsageType extends AbstractType
                     new NotNull()
                 ]
             ])
+            ->add('duration', TextType::class, [
+                "constraints" => [
+                    new NotNull()
+                ]
+            ])
             ->add('house', TextType::class, [
                 "constraints" => [
                     new NotNull()

@@ -44,8 +44,24 @@ class Device
      */
     private $usages;
 
+    /**
+     * @ORM\ManyToOne(targetEntity=DeviceType::class, inversedBy="devices")
+     */
+    private $deviceType;
+
+    /**
+     * @ORM\Column(type="integer", nullable=true)
+     */
+    private $priority_rating;
+
+    /**
+     * @ORM\Column(type="boolean", nullable=true)
+     */
+    private $plugged_in;
+
     public function __construct()
     {
+        $this->plugged_in = false;
         $this->usages = new ArrayCollection();
     }
 
@@ -128,6 +144,42 @@ class Device
                 $usage->setDevice(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getDeviceType(): ?DeviceType
+    {
+        return $this->deviceType;
+    }
+
+    public function setDeviceType(?DeviceType $deviceType): self
+    {
+        $this->deviceType = $deviceType;
+
+        return $this;
+    }
+
+    public function getPriorityRating(): ?int
+    {
+        return $this->priority_rating;
+    }
+
+    public function setPriorityRating(?int $priority_rating): self
+    {
+        $this->priority_rating = $priority_rating;
+
+        return $this;
+    }
+
+    public function getPluggedIn(): ?bool
+    {
+        return $this->plugged_in;
+    }
+
+    public function setPluggedIn(?bool $plugged_in): self
+    {
+        $this->plugged_in = $plugged_in;
 
         return $this;
     }
