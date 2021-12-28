@@ -2,6 +2,7 @@
 
 namespace App\Tests;
 
+use App\Entity\House;
 use App\Entity\Neighborhood;
 use App\Repository\NeighborhoodRepository;
 use Doctrine\Persistence\ObjectManager;
@@ -25,7 +26,6 @@ class NeighborhoodTest extends KernelTestCase
         $this->neighborhoodRepository = $this->createMock(NeighborhoodRepository::class);
     }
 
-
     public function testANeighborhoodIsCreatedInDatabase(): void
     {
         $neighborhood = new Neighborhood();
@@ -39,6 +39,7 @@ class NeighborhoodTest extends KernelTestCase
             ->method('findByStreet')
             ->willReturn($neighborhood);
 
+        /** @var Neighborhood $neighborhoodObj */
         $neighborhoodObj = $this->neighborhoodRepository->findByStreet("Teststraat");
 
         $this->assertEquals("North", $neighborhoodObj->getDirection());

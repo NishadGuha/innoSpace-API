@@ -59,6 +59,24 @@ class HouseRepository
     }
 
     /**
+     * Find house by house number.
+     *
+     * @param string $houseNumber
+     * @return House
+     *
+     * @throws NonUniqueResultException
+     */
+    public function findByHouseNumber(string $houseNumber): House
+    {
+        return $this
+            ->qb()
+            ->where($this->qb()->expr()->eq('house.houseNumber', ':houseNumber'))
+            ->setParameter('houseNumber', $houseNumber)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
+
+    /**
      * Save house to database.
      *
      * @param House $house
