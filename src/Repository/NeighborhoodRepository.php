@@ -59,6 +59,24 @@ class NeighborhoodRepository
     }
 
     /**
+     * Find neighborhood by street.
+     *
+     * @param string $street
+     * @return Neighborhood
+     *
+     * @throws NonUniqueResultException
+     */
+    public function findByStreet(string $street): Neighborhood
+    {
+        return $this
+            ->qb()
+            ->where($this->qb()->expr()->eq('neighborhood.street', ':street'))
+            ->setParameter('street', $street)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
+
+    /**
      * Save neighborhood to database.
      *
      * @param Neighborhood $neighborhood
