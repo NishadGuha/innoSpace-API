@@ -2,10 +2,8 @@
 
 namespace App\Tests;
 
-use App\Entity\House;
 use App\Entity\Neighborhood;
 use App\Repository\NeighborhoodRepository;
-use Doctrine\Persistence\ObjectManager;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 
 

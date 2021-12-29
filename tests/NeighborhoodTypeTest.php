@@ -4,14 +4,28 @@ namespace App\Tests;
 
 use App\Entity\Neighborhood;
 use App\Form\NeighborhoodType;
+use Symfony\Component\Form\Extension\Validator\ValidatorExtension;
 use Symfony\Component\Form\Test\TypeTestCase;
+use Symfony\Component\Validator\Validation;
 
 class NeighborhoodTypeTest extends TypeTestCase
 {
+    protected function getExtensions(): array
+    {
+        $validator = Validation::createValidatorBuilder()
+            ->enableAnnotationMapping(true)
+            ->addDefaultDoctrineAnnotationReader()
+            ->getValidator();
+
+        return [
+            new ValidatorExtension($validator),
+        ];
+    }
+
     public function testSubmitValidData() {
         $formData = [
-            'direction' => 'North',
-            'street' => 'Teststraat'
+            'direction' => null,
+            'street' => null
         ];
 
         $model = new Neighborhood();
@@ -25,17 +39,5 @@ class NeighborhoodTypeTest extends TypeTestCase
         $this->assertTrue($form->isSynchronized());
 
         $this->assertEquals($expected, $model);
-    }
-
-    public function testCustomFormView() {
-        $formData = new Neighborhood();
-
-        $view = $this->factory->create(NeighborhoodType::class, $formData)
-            ->createView();
-
-        dump($view->vars);
-        die;
-
-        $this->assertArrayHasKey();
     }
 }
