@@ -74,7 +74,7 @@ class HouseType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
-            'data_class' => House::class,
+            'data_class' => House::class
         ]);
     }
 }
