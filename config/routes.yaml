@@ -233,3 +233,13 @@ device_type_delete_all:
   path: /api/device-type/delete-all
   controller: App\Controller\DeviceTypeController:removeAllAction
   methods: [DELETE]
+
+app.swagger_ui:
+  path: /api/doc
+  methods: GET
+  defaults: { _controller: nelmio_api_doc.controller.swagger_ui }
+
+app.swagger:
+  path: /api/doc.json
+  methods: GET
+  defaults: { _controller: nelmio_api_doc.controller.swagger }

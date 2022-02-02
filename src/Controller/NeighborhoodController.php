@@ -7,6 +7,8 @@ use App\Form\NeighborhoodType;
 use App\Repository\NeighborhoodRepository;
 use Doctrine\ORM\NonUniqueResultException;
 use Exception;
+use Psr\Container\ContainerExceptionInterface;
+use Psr\Container\NotFoundExceptionInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -15,7 +17,6 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class NeighborhoodController extends AbstractApiController
 {
-
     private NeighborhoodRepository $neighborhoodRepository;
 
     /**
@@ -156,6 +157,8 @@ class NeighborhoodController extends AbstractApiController
      * @param int $id
      * @return Response|void
      * @throws NonUniqueResultException
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
      */
     public function updateAction(Request $request, int $id)
     {
@@ -192,6 +195,13 @@ class NeighborhoodController extends AbstractApiController
         return new Response($neighborhoodSerialized, 200, []);
     }
 
+    /**
+     * Returns all houses in a neighborhood.
+     * @param Request $request
+     * @param int $id
+     * @return Response
+     * @throws NonUniqueResultException
+     */
     public function getAllHouses(Request $request, int $id): Response
     {
         $neighborhood = $this->neighborhoodRepository->findById($id);

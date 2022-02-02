@@ -8,6 +8,8 @@ use App\Repository\DeviceRepository;
 use App\Utils\SerializerUtil;
 use Doctrine\ORM\NonUniqueResultException;
 use Exception;
+use Psr\Container\ContainerExceptionInterface;
+use Psr\Container\NotFoundExceptionInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -157,6 +159,8 @@ class DeviceController extends AbstractApiController
      * @param int $id
      * @return Response|void
      * @throws NonUniqueResultException
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
      */
     public function updateAction(Request $request, int $id)
     {
@@ -193,6 +197,12 @@ class DeviceController extends AbstractApiController
         return new Response($deviceSerialized, 200, []);
     }
 
+    /**
+     * @param Request $request
+     * @param int $id
+     * @return Response
+     * @throws NonUniqueResultException
+     */
     public function getAllUsages(Request $request, int $id): Response
     {
         $device = $this->deviceRepository->findById($id);

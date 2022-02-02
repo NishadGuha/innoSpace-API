@@ -7,12 +7,17 @@ use App\Repository\HouseTypeRepository;
 use App\Utils\SerializerUtil;
 use Doctrine\ORM\NonUniqueResultException;
 use Exception;
+use Psr\Container\ContainerExceptionInterface;
+use Psr\Container\NotFoundExceptionInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 class HouseTypeController extends AbstractApiController
 {
+    /**
+     * @var HouseTypeRepository
+     */
     private HouseTypeRepository $houseTypeRepository;
 
     /**
@@ -89,6 +94,8 @@ class HouseTypeController extends AbstractApiController
     /**
      * @param Request $request
      * @return Response
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
      */
     public function createAction(Request $request): Response
     {

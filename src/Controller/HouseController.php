@@ -8,6 +8,8 @@ use App\Repository\NeighborhoodRepository;
 use App\Utils\SerializerUtil;
 use Doctrine\ORM\NonUniqueResultException;
 use Exception;
+use Psr\Container\ContainerExceptionInterface;
+use Psr\Container\NotFoundExceptionInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -16,8 +18,14 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class HouseController extends AbstractApiController
 {
+    /**
+     * @var HouseRepository
+     */
     private HouseRepository $houseRepository;
 
+    /**
+     * @var NeighborhoodRepository
+     */
     private NeighborhoodRepository $neighborhoodRepository;
 
     /**
@@ -161,6 +169,8 @@ class HouseController extends AbstractApiController
      * @param int $id
      * @return Response|void
      * @throws NonUniqueResultException
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
      */
     public function updateAction(Request $request, int $id)
     {
@@ -201,6 +211,12 @@ class HouseController extends AbstractApiController
         return new Response($houseSerialized, 200, []);
     }
 
+    /**
+     * @param Request $request
+     * @param int $id
+     * @return Response
+     * @throws NonUniqueResultException
+     */
     public function getAllDevices(Request $request, int $id): Response
     {
         $house = $this->houseRepository->findById($id);
@@ -218,6 +234,12 @@ class HouseController extends AbstractApiController
         return new Response($devicesSerialized, 200, []);
     }
 
+    /**
+     * @param Request $request
+     * @param int $id
+     * @return Response
+     * @throws NonUniqueResultException
+     */
     public function getAllUsages(Request $request, int $id): Response
     {
         $house = $this->houseRepository->findById($id);

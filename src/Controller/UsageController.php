@@ -8,6 +8,8 @@ use App\Repository\UsageRepository;
 use App\Utils\SerializerUtil;
 use Doctrine\ORM\NonUniqueResultException;
 use Exception;
+use Psr\Container\ContainerExceptionInterface;
+use Psr\Container\NotFoundExceptionInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -15,6 +17,9 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class UsageController extends AbstractApiController
 {
+    /**
+     * @var UsageRepository
+     */
     private UsageRepository $usageRepository;
 
     /**
@@ -97,6 +102,8 @@ class UsageController extends AbstractApiController
     /**
      * @param Request $request
      * @return Response
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
      */
     public function createAction(Request $request): Response
     {
@@ -168,7 +175,9 @@ class UsageController extends AbstractApiController
      * @param Request $request
      * @param int $id
      * @return Response|void
+     * @throws ContainerExceptionInterface
      * @throws NonUniqueResultException
+     * @throws NotFoundExceptionInterface
      */
     public function updateAction(Request $request, int $id)
     {

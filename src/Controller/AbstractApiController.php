@@ -2,20 +2,32 @@
 
 namespace App\Controller;
 
-use App\Repository\NeighborhoodRepository;
 use FOS\RestBundle\Controller\AbstractFOSRestController;
+use Psr\Container\ContainerExceptionInterface;
+use Psr\Container\NotFoundExceptionInterface;
 use Symfony\Component\Form\FormInterface;
-use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 abstract class AbstractApiController extends AbstractFOSRestController
 {
+    /**
+     * @param string $type
+     * @param null $data
+     * @param array $options
+     * @return FormInterface
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
+     */
     protected function buildForm(string $type, $data = null, array $options = []): FormInterface
     {
         return $this->container->get('form.factory')->createNamed('', $type, $data, $options);
     }
 
+    /**
+     * @param $data
+     * @param int $statusCode
+     * @return Response
+     */
     protected function respond($data, int $statusCode = Response::HTTP_OK): Response
     {
         return $this->handleView($this->view($data, $statusCode));
